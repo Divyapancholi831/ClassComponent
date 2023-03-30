@@ -30,11 +30,12 @@ class SearchParams extends Component{
 
     
     componentDidUpdate(previousProps,previousState){
-        if(previousState.animal !== this.state.animal){
+        if(previousState.animal !== this.state.animal)
             this.requestBreedList();
-        }
+       
         console.log("state",this.state);
         console.log("previousState",previousState);
+        
     }
     
 
