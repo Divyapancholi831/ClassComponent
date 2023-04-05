@@ -1,5 +1,6 @@
 import { Component } from "react";
 import { ResultPets } from "./ResultPets";
+import ThemeContext from "./ThemeContext";
 
 class SearchParams extends Component{
     state = {
@@ -42,7 +43,9 @@ class SearchParams extends Component{
     render(){
         const ANIMALS = ["dog","bird","cat","rabbit","reptile"];
         // const BREEDS = useBreedList(this.state.animal);
+        const COLORS = ["Darkblue","peru","Red","Green","Yellow","Orange"];
         console.log(this.state.pet);
+        
         return(
             <div>
                 <form onSubmit={(e) => {
@@ -70,9 +73,23 @@ class SearchParams extends Component{
                         <input value={this.state.location} onChange={(e)=>this.setState({...this.state,location : e.target.value})}/>
                     </label>
 
+                    <label>
+                        Theme:
+                        <ThemeContext.Consumer>
+                        {([theme]) => 
+                        <select value={theme} onChange={(e)=> this.setState({theme : e.target.value})} >
+                            {COLORS.map((color,index)=>
+                            <option key={index} value={color}>{color}</option>
+                            )}
+                        </select>
+                        }
+                        </ThemeContext.Consumer>
+                    </label>
 
                     <label>
-                        <button>Submit</button>
+                        <ThemeContext.Consumer>
+                            {([theme])=> ( <button style={{backgroundColor : theme}}>Submit</button>)}
+                        </ThemeContext.Consumer>
                     </label>
                 </form>
 
