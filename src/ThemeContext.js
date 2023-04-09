@@ -1,3 +1,8 @@
 import {createContext} from "react";
-const ThemeContext = createContext();
-export default ThemeContext;
+
+ export const ThemeContext = createContext();
+
+ export const PetContext = createContext();
+
+// export default ThemeContext;
+

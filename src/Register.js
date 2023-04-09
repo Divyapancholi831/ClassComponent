@@ -1,5 +1,6 @@
 import react,{Component} from 'react';
 import { Result } from './Result';
+import {ThemeContext} from './ThemeContext';
 class Register extends Component{
     //EDUCATIONS = ['Pre school','High school','Diploma','Bachelor Degree','Master Degree','Phd'];
     state = {
@@ -101,7 +102,9 @@ class Register extends Component{
                 <br/>
 
                 <label>
-                    <button onClick={() =>this.setState({show : !this.state.show})}>Show</button>
+                    <ThemeContext.Consumer>
+                        {([theme]) => <button style={{backgroundColor : theme}} onClick={()=>this.setState({show : !this.state.show})}>Submit</button>}
+                    </ThemeContext.Consumer>
                 </label>
                 <br/>
                 <br/>

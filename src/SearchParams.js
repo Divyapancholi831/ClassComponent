@@ -1,32 +1,37 @@
 import { Component } from "react";
 import { ResultPets } from "./ResultPets";
-import ThemeContext from "./ThemeContext";
+import {ThemeContext,PetContext} from "./ThemeContext";
 
 class SearchParams extends Component{
     state = {
-        pet : [],
         animal : "",
         breedList : [],
         breed : "",
         location : "",
     }
+    
 
     requestPets = async () =>  {
+        const updatePet = this.context;
         const res = await fetch(`http://pets-v2.dev-apis.com/pets?animal=${this.state.animal}&location=${this.state.location}&breed=${this.state.breed}`);
         const json = await res.json();
         console.log("json",json);
-        this.setState({...this.state,pet : json.pets});
+        updatePet[1]([...json.pets]);
+        // this.setState({...this.state,pet : json.pets});
     }
 
-    async componentDidMount(){
-        this.requestPets();
+    static contextType = PetContext;
+    async componentDidMount(){    
+    this.requestPets();
     }
     
     requestBreedList = async () => {
+        
         const res = await fetch(`http://pets-v2.dev-apis.com/breeds?animal=${this.state.animal}`);
         const json = await res.json();
         console.log("json",json.breeds);
         this.setState({...this.state,breedList : json.breeds})
+       
     }
 
     
@@ -39,12 +44,13 @@ class SearchParams extends Component{
         
     }
     
+    
 
     render(){
         const ANIMALS = ["dog","bird","cat","rabbit","reptile"];
         // const BREEDS = useBreedList(this.state.animal);
         const COLORS = ["Darkblue","peru","Red","Green","Yellow","Orange"];
-        console.log(this.state.pet);
+        // console.log(this.state.pet);
         
         return(
             <div>
@@ -76,8 +82,8 @@ class SearchParams extends Component{
                     <label>
                         Theme:
                         <ThemeContext.Consumer>
-                        {([theme]) => 
-                        <select value={theme} onChange={(e)=> this.setState({theme : e.target.value})} >
+                        {([theme,setTheme]) => 
+                        <select value={theme} onChange={(e)=> setTheme(e.target.value)} >
                             {COLORS.map((color,index)=>
                             <option key={index} value={color}>{color}</option>
                             )}
@@ -92,8 +98,9 @@ class SearchParams extends Component{
                         </ThemeContext.Consumer>
                     </label>
                 </form>
-
-                <ResultPets pet = {this.state.pet}/>
+        
+                <ResultPets/>
+               
             </div>
         )
     }
