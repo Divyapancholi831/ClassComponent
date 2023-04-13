@@ -2,11 +2,13 @@ import { Component } from "react";
 import { ResultPets } from "./ResultPets";
 import {ThemeContext,PetContext} from "./ThemeContext";
 
+const cacheStorage  = {};
+
 class SearchParams extends Component{
     state = {
-        animal : "",
+        animal : localStorage.getItem("animal") || "",
         breedList : [],
-        breed : "",
+        breed : localStorage.getItem("breed") || "",
         location : "",
     }
     
@@ -26,10 +28,10 @@ class SearchParams extends Component{
     }
     
     requestBreedList = async () => {
-        
         const res = await fetch(`http://pets-v2.dev-apis.com/breeds?animal=${this.state.animal}`);
         const json = await res.json();
         console.log("json",json.breeds);
+        cacheStorage[this.state.animal] = json.breeds;
         this.setState({...this.state,breedList : json.breeds})
        
     }
@@ -37,8 +39,12 @@ class SearchParams extends Component{
     
     componentDidUpdate(previousProps,previousState){
         if(previousState.animal !== this.state.animal)
-            this.requestBreedList();
-       
+           
+            if(cacheStorage[this.state.animal]){
+                this.setState({...this.state,breedList : cacheStorage[this.state.animal]})
+            }else if(this.state.animal){
+                this.requestBreedList();
+            }
         console.log("state",this.state);
         console.log("previousState",previousState);
         
@@ -69,8 +75,8 @@ class SearchParams extends Component{
                     <label>
                         Breed:
                         <select value={this.state.breed} onChange={(e)=>this.setState({...this.state,breed : e.target.value})}>
-                            <option></option>
-                            {this.state.breedList.map((breed,index)=><option key={index} value={breed}>{breed}</option>)}
+                            <option value=""></option>
+                            {this.state.breedList?.map((breed,index)=><option key={index} value={breed}>{breed}</option>)}
                         </select>
                     </label>
 
@@ -96,6 +102,11 @@ class SearchParams extends Component{
                         <ThemeContext.Consumer>
                             {([theme])=> ( <button style={{backgroundColor : theme}}>Submit</button>)}
                         </ThemeContext.Consumer>
+                    </label>
+
+
+                    <label>
+                        <button onClick={()=>{this.setState({...this.state,animal : "",breed : ""});this.requestPets()}}>View All</button>
                     </label>
                 </form>
         

@@ -13,7 +13,9 @@ class DetailsPet extends Component{
         const json = await res.json();
         console.log("json",json);
         updatePet[1](json.pets[0])
+        localStorage.setItem("animal",json.pets[0].animal);
         // this.setState({...this.state,pet : json.pets[0]})
+        localStorage.setItem("breed",json.pets[0].breed);
     }
 
     static contextType = PetContext;
