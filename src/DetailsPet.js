@@ -1,12 +1,17 @@
-import { Component } from "react";
+import { Component, createRef } from "react";
 import { useParams } from "react-router-dom";
 import { Carousel } from "./Carousel";
 import {PetContext, ThemeContext} from "./ThemeContext";
 
 class DetailsPet extends Component{
-      state = {
-        pet : {},
+    constructor(){
+        super();
+        this.textref = createRef();
+        this.state = {
+            pet : {},
+        }
     }
+        
     requestpetId = async () => {
         const updatePet = this.context;
         const res = await fetch(`http://pets-v2.dev-apis.com/pets?id=${this.props.params.id}`);
@@ -30,6 +35,7 @@ class DetailsPet extends Component{
     console.log(this.props);
     // console.log(this.state.pet);
     console.log("pet img",images);
+    // const textref = useRef();
        return(
         <div>
             <div>
@@ -43,7 +49,8 @@ class DetailsPet extends Component{
                 {([theme])=> (<button style={{backgroundColor : theme}}>Adopt {name}</button>)} 
             </ThemeContext.Consumer>
             
-            <p>{description}</p>
+            <p ref={this.textref}>{description}</p>
+            <button  onClick={()=>this.textref.current.innerHTML = name}>change description</button>
         </div>
        );
 
